@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  # Redis para rate limiting
+  redis:
+    image: redis:7-alpine
+    container_name: api-gateway-redis
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    networks:
+      - api-gateway-network
+
+  # Eureka Server para service discovery
+  eureka-server:
+    image: steeltoeoss/eureka-server:latest
+    container_name: api-gateway-eureka
+    ports:
+      - "8761:8761"
+    environment:
+      - EUREKA_CLIENT_REGISTER_WITH_EUREKA=false
+      - EUREKA_CLIENT_FETCH_REGISTRY=false
+    networks:
+      - api-gateway-network
+
+  # API Gateway
+  api-gateway:
+    build: .
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATA_REDIS_HOST=redis
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    depends_on:
+      - redis
+      - eureka-server
+    networks:
+      - api-gateway-network
+
+volumes:
+  redis_data:
+
+networks:
+  api-gateway-network:
+    driver: bridge
