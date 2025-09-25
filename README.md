@@ -207,7 +207,7 @@ Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalh
 ## 📞 Suporte
 
 Para suporte, entre em contato através de:
-- Email: suporte@exemplo.com
+- Email: thiago.pantoja@easynext.consulting
 - Issues: [GitHub Issues](https://github.com/seu-usuario/api-gateway-springboot/issues)
 
 ---
